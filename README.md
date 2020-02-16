@@ -8,7 +8,7 @@ Based on the dorita980 library https://github.com/koalazak/dorita980#readme
 [![Stable Version](http://iobroker.live/badges/roomba-stable.svg)](http://iobroker.live/badges/roomba-stable.svg)
 [![NPM Version](http://img.shields.io/npm/v/iobroker.roomba.svg)](https://www.npmjs.com/package/iobroker.roomba)
 [![Commits since last release](https://img.shields.io/github/commits-since/iobroker-community-adapters/ioBroker.roomba/latest.svg)](https://github.com/iobroker-community-adapters/ioBroker.roomba/releases/latest)
-[![Travis CI](https://travis-ci.org/iobroker-community-adapters/ioBroker.roomba.svg?branch=master)](https://travis-ci.org/iobroker-community-adapters/ioBroker.roomba)
+[![Travis CI](https://travis-ci.com/iobroker-community-adapters/ioBroker.roomba.svg?branch=master)](https://travis-ci.com/iobroker-community-adapters/ioBroker.roomba)
 [![Downloads](https://img.shields.io/npm/dm/iobroker.roomba.svg)](https://www.npmjs.com/package/iobroker.roomba)
 
 [![NPM](https://nodei.co/npm/iobroker.roomba.png?downloads=true)](https://nodei.co/npm/iobroker.roomba/)
