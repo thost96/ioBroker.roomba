@@ -484,8 +484,8 @@ function getRobotData(callback, ip)
 		try
 		{
 			let parsedMsg = JSON.parse(msg);
-			if (parsedMsg.hostname && parsedMsg.ip && parsedMsg.hostname.split('-')[0] === 'Roomba')
-			{
+			if (parsedMsg.hostname && parsedMsg.ip && ((parsedMsg.hostname.split('-')[0] === 'Roomba') || (parsedMsg.hostname.split('-')[0] === 'iRobot'))) {
+				
 				server.close();
 				parsedMsg.user = parsedMsg.hostname.split('-')[1];
 				callback({result: true, data: parsedMsg});

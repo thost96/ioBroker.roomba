@@ -304,6 +304,9 @@ You may edit the variable ```message``` to any notification you would like to re
 
 ## Changelog
 
+### 1.1.1 (2020-02-16)
+- (Zefau) moved development to Community Repository
+
 ### 1.1.0 (2020-02-06)
 - (Zefau) added support to change schedule (see [#36](https://github.com/Zefau/ioBroker.roomba/issues/36))
 - (Zefau) fixed bug with state `commands.last.dateTime` having incorrect value `NaN`
