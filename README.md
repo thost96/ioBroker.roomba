@@ -9,8 +9,8 @@ Based on the dorita980 library https://github.com/koalazak/dorita980#readme
 [![Number of Installations](http://iobroker.live/badges/roomba-installed.svg)](http://iobroker.live/badges/roomba-installed.svg)
 [![Stable Version](http://iobroker.live/badges/roomba-stable.svg)](http://iobroker.live/badges/roomba-stable.svg)
 [![NPM Version](http://img.shields.io/npm/v/iobroker.roomba.svg)](https://www.npmjs.com/package/iobroker.roomba)
-[![Commits since last release](https://img.shields.io/github/commits-since/Zefau/ioBroker.roomba/latest.svg)](https://github.com/Zefau/ioBroker.roomba/releases/latest)
-[![Travis CI](https://travis-ci.org/Zefau/ioBroker.roomba.svg?branch=master)](https://travis-ci.org/Zefau/ioBroker.roomba)
+[![Commits since last release](https://img.shields.io/github/commits-since/iobroker-community-adapters/ioBroker.roomba/latest.svg)](https://github.com/iobroker-community-adapters/ioBroker.roomba/releases/latest)
+[![Travis CI](https://travis-ci.org/iobroker-community-adapters/ioBroker.roomba.svg?branch=master)](https://travis-ci.org/iobroker-community-adapters/ioBroker.roomba)
 [![Downloads](https://img.shields.io/npm/dm/iobroker.roomba.svg)](https://www.npmjs.com/package/iobroker.roomba)
 
 [![NPM](https://nodei.co/npm/iobroker.roomba.png?downloads=true)](https://nodei.co/npm/iobroker.roomba/)
@@ -122,7 +122,7 @@ For manual setup see https://github.com/koalazak/dorita980#how-to-get-your-usern
 | Roomba® e5 | [e5](https://forum.iobroker.net/topic/7657/irobot-roomba-adapter/158) | v3.4.42 | [Release Notes](https://homesupport.irobot.com/app/answers/detail/a_id/6345#rn_PageTitle) | ![#c5f015](https://placehold.it/15/c5f015/000000?text=+) **supported** (![#f03c15](https://placehold.it/15/f03c15/000000?text=+) NO map) |
 | Roomba® s | [S9+](https://github.com/Zefau/ioBroker.roomba/issues/34) | v3.2.4 | [Release Notes](https://homesupport.irobot.com/app/answers/detail/a_id/26887/kw/s9%2B#rn_PageTitle) | ![#c5f015](https://placehold.it/15/c5f015/000000?text=+) **supported (incl. map)** |
 
-Please help me regarding the supported devices and let me [know via an issue](https://github.com/Zefau/ioBroker.roomba/issues), whether your Roomba model is supported!
+Please help us regarding the supported devices and let me [know via an issue](https://github.com/iobroker-community-adapters/ioBroker.roomba/issues), whether your Roomba model is supported!
 
 
 ## Channels & States
@@ -236,7 +236,7 @@ The following payload will be received when calling ```getPreferences()``` (see 
 | localtimeoffset | - | integer | Unknown | - |
 | ... | - | ... | ... | - |
 
-Please help me regarding the description of the preferences. If you know the meaning of preferences stated as unknown in the table, let me [know their meaning via an issue](https://github.com/Zefau/ioBroker.roomba/issues)!
+Please help us regarding the description of the preferences. If you know the meaning of preferences stated as unknown in the table, let me [know their meaning via an issue](https://github.com/iobroker-community-adapters/ioBroker.roomba/issues)!
 
 
 ## Smart Home / Alexa integration using ioBroker.javascript
