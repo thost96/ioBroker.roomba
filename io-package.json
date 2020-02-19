@@ -234,12 +234,12 @@
         "platform": "Javascript/Node.js",
         "mode": "daemon",
         "icon": "roomba.png",
-        "extIcon": "https://raw.githubusercontent.com/Zefau/ioBroker.roomba/master/admin/roomba.png",
+        "extIcon": "https://raw.githubusercontent.com/iobroker-community-adapters/ioBroker.roomba/master/admin/roomba.png",
         "keywords": [
             "roomba",
             "irobot"
         ],
-        "readme": "https://github.com/Zefau/ioBroker.roomba/blob/master/README.md",
+        "readme": "https://github.com/iobroker-community-adapters/ioBroker.roomba/blob/master/README.md",
         "loglevel": "info",
         "type": "household",
         "materialize": true,
