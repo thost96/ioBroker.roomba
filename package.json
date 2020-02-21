@@ -1,31 +1,4 @@
 {
-  "_from": "https://github.com/iobroker-community-adapters/ioBroker.roomba/tarball/master",
-  "_id": "iobroker.roomba@1.0.1",
-  "_inBundle": false,
-  "_integrity": "sha512-79BLQ+zTeU32Tm/bmj2gv1THQKN+THx2XMlfl1FZwUl55IaPmHvsBXQpWqdmlbHxfqvOYPvdGbaEddhpOnocQw==",
-  "_location": "/iobroker.roomba",
-  "_phantomChildren": {
-    "decompress-response": "3.3.0",
-    "nan": "2.13.2",
-    "node-pre-gyp": "0.11.0",
-    "once": "1.4.0",
-    "simple-concat": "1.0.0"
-  },
-  "_requested": {
-    "type": "remote",
-    "raw": "https://github.com/iobroker-community-adapters/ioBroker.roomba/tarball/master",
-    "rawSpec": "https://github.com/iobroker-community-adapters/ioBroker.roomba/tarball/master",
-    "saveSpec": "https://github.com/iobroker-community-adapters/ioBroker.roomba/tarball/master",
-    "fetchSpec": "https://github.com/iobroker-community-adapters/ioBroker.roomba/tarball/master"
-  },
-  "_requiredBy": [
-    "#USER",
-    "/"
-  ],
-  "_resolved": "https://github.com/iobroker-community-adapters/ioBroker.roomba/tarball/master",
-  "_shasum": "39824a4ec9951acaffb218b622902ef9646c7013",
-  "_spec": "https://github.com/iobroker-community-adapters/ioBroker.roomba/tarball/master",
-  "_where": "/opt/iobroker",
   "author": {
     "name": "zefau",
     "email": "zefau@mailbox.org"
