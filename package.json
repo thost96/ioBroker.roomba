@@ -15,7 +15,8 @@
   ],
   "dependencies": {
     "@iobroker/adapter-core": "^2.2.1",
-    "dorita980": "^3.1.7"
+    "dorita980": "^3.1.7",
+    "snyk": "^1.316.1"
   },
   "deprecated": false,
   "description": "Connect your iRobot Roomba to ioBroker",
@@ -43,7 +44,10 @@
     "test": "npm run test:package && npm run test:unit",
     "test:integration": "mocha test/integration --exit",
     "test:package": "mocha test/package --exit",
-    "test:unit": "mocha test/unit --exit"
+    "test:unit": "mocha test/unit --exit",
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
   },
-  "version": "1.1.1"
+  "version": "1.1.1",
+  "snyk": true
 }
