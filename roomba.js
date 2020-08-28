@@ -42,6 +42,7 @@ let offset = 10;
 
 let listeners = {};
 let actions = ['start', 'stop', 'pause', 'resume', 'dock']; // states that trigger actions
+let additionalListeners = ['_runCommand']; // additional states that trigger actions
 const nodeConnected = {'node': 'states._connected', 'description': 'Connection state'};
 
 
@@ -150,10 +151,13 @@ function startAdapter(options)
 		// run command
 		else if (action == '_runCommand' && state.ack !== true)
 		{
-			let command = { command: state.val, time: Date.now() / 1000 | 0, initiator: 'localApp' };
-			robot.publish('cmd', JSON.stringify(command), () => {
-				adapter.log.info('Ran command ' + state.val + '!');
-			});
+			// send command directly to the robot
+			if (state.val)
+			{
+				robot.publish('cmd', state.val, () => {
+					adapter.log.info('Ran command ' + state.val + '!');
+				});
+			}
 		}
 		
 		// set schedule
@@ -484,8 +488,8 @@ function getRobotData(callback, ip)
 		try
 		{
 			let parsedMsg = JSON.parse(msg);
-			if (parsedMsg.hostname && parsedMsg.ip && ((parsedMsg.hostname.split('-')[0] === 'Roomba') || (parsedMsg.hostname.split('-')[0] === 'iRobot'))) {
-				
+			if (parsedMsg.hostname && parsedMsg.ip && parsedMsg.hostname.split('-')[0] === 'Roomba')
+			{
 				server.close();
 				parsedMsg.user = parsedMsg.hostname.split('-')[1];
 				callback({result: true, data: parsedMsg});
@@ -567,7 +571,7 @@ function updPreferences(preferences)
 				}
 				
 				// check value
-				if (tmp === undefined || tmp[preference] === undefined || tmp[preference] === 'aN.aN.NaN aN:aN:aN')
+				if (tmp === undefined || tmp[preference] === undefined || tmp[preference] === null || tmp[preference] === 'aN.aN.NaN aN:aN:aN')
 					return;
 				
 				// convert value
@@ -614,14 +618,36 @@ function updPreferences(preferences)
 			// only state creation
 			else
 			{
-				adapter.getState(node.node, function(err, res)
+				if (node.node !== undefined)
 				{
-					if ((err !== null || !res) && (node.node !== undefined && node.description !== undefined))
-						library.set(node, '');
-				});
+					let leafnode = node.node.substr(node.node.lastIndexOf('.')+1);
+					adapter.log.debug('Leafnode: ' + leafnode + '.');
+
+					if ((leafnode) && (additionalListeners.indexOf(leafnode) > -1) && listeners[node.node] === undefined)
+					{
+						adapter.log.info('Subscripe Leafnode: ' + leafnode + '.');
+						adapter.subscribeStates(node.node); // attach state listener
+						listeners[node.node] = node;
+					}
+					adapter.getState(node.node, function(err, res)
+					{
+						if ((err !== null || !res) && (node.node !== undefined && node.description !== undefined))
+							library.set(node, '');
+					});
+				}
+
 			}
 		}
-		catch(err) {adapter.log.error(JSON.stringify(err.message))}
+		catch(err) {
+			if (node.node)
+			{
+				adapter.log.error(node.node + " --> " + JSON.stringify(err.message));
+			}
+			else
+			{
+				adapter.log.error(JSON.stringify(err.message));
+			}
+		}
 	});
 	
 	library.set({'node': 'refreshedTimestamp', 'description': 'Timestamp of last update', 'role': 'value'}, Math.floor(Date.now()/1000));
