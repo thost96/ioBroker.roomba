@@ -2,7 +2,7 @@
  * Admin functions.
  *
  * @author Zefau <zefau@mailbox.org>
- * @version 0.3.0
+ * @version 1.1.1
  *
  */
 
