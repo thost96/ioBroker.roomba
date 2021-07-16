@@ -54,7 +54,7 @@ function startAdapter(options)
 {
 	options = options || {};
 	adapter = new utils.Adapter({ ...options, name: adapterName });
-	
+
 	/*
 	 * ADAPTER READY
 	 *
@@ -63,18 +63,18 @@ function startAdapter(options)
 	{
 		unloaded = false;
 		library = new Library(adapter, { updatesInLog: adapter.config.debug || false });
-		
+
 		// Check Node.js Version
 		let version = parseInt(process.version.substr(1, process.version.indexOf('.')-1));
 		if (version <= 6) {
 			return library.terminate('This Adapter is not compatible with your Node.js Version ' + process.version + ' (must be >= Node.js v7).', true);
 		}
-		
+
 		// check for canvas
 		try {
 			_canvas = require('canvas');
 			_installed = true;
-			
+
 			Canvas = _canvas.Canvas;
 			Image = _canvas.Image;
 			createCanvas = _canvas.createCanvas;
@@ -83,17 +83,17 @@ function startAdapter(options)
 			adapter.log.warn('Canvas not installed! Thus, no map drawings are possible. Please see installation instructions on Github (https://github.com/Zefau/ioBroker.roomba#installation).');
 			adapter.log.debug(e.message);
 		}
-		
+
 		// check if settings are set
 		if (!adapter.config.username || !adapter.config.password || !adapter.config.ip) {
 			return library.terminate('Username, password and / or ip address missing!');
 		}
-		
+
 		// connect to Robot
 		library.set(Library.CONNECTION, true);
 		roomba();
 	});
-	
+
 	/*
 	 * ADAPTER UNLOAD
 	 *
@@ -103,11 +103,11 @@ function startAdapter(options)
 		try
 		{
 			adapter.log.info('Adapter stopped und unloaded.');
-			
+
 			unloaded = true;
 			clearTimeout(refreshCycle);
 			disconnect();
-			
+
 			callback();
 		}
 		catch(e)
@@ -115,7 +115,7 @@ function startAdapter(options)
 			callback();
 		}
 	});
-	
+
 	/*
 	 * STATE CHANGE
 	 *
@@ -124,7 +124,7 @@ function startAdapter(options)
 	{
 		adapter.log.debug('State of ' + node + ' has changed ' + JSON.stringify(state) + '.');
 		let action = node.substr(node.lastIndexOf('.')+1);
-		
+
 		// action on Roomba
 		if (actions.indexOf(action) > -1 && state.ack !== true)
 		{
@@ -137,7 +137,7 @@ function startAdapter(options)
 			else
 				adapter.log.warn('Roomba not online! Action not triggered.');
 		}
-		
+
 		// end mission
 		else if (action == '_endMission' && state.ack !== true)
 		{
@@ -147,7 +147,7 @@ function startAdapter(options)
 			else
 				adapter.log.warn('Could not save mission.');
 		}
-		
+
 		// run command
 		else if (action == '_runCommand' && state.ack !== true)
 		{
@@ -159,25 +159,25 @@ function startAdapter(options)
 				});
 			}
 		}
-		
+
 		// set schedule
 		else if ((action == 'cycle' || action == 'hours' || action == 'minutes') && state.ack !== true)
 		{
 			library.setDeviceState(node.replace(adapter.name + '.' + adapter.instance + '.', ''), state.val);
-			
+
 			let week = {
 				'cycle': library.getDeviceState('missions.schedule.cycle').split(','),
 				'h': library.getDeviceState('missions.schedule.hours').split(',').map(h => parseInt(h)),
 				'm': library.getDeviceState('missions.schedule.minutes').split(',').map(m => parseInt(m))
 			};
-			
+
 			adapter.log.warn(JSON.stringify(week));
 			robot.setWeek(week)
 				.then(res => adapter.log.info('Set Roomba cleaning schedule (to ' + JSON.stringify(week) + ').'))
 				.catch(err => adapter.log.warn(err.message));
 		}
 	});
-	
+
 	/*
 	 * HANDLE MESSAGES
 	 *
@@ -185,14 +185,14 @@ function startAdapter(options)
 	adapter.on('message', function(msg)
 	{
 		adapter.log.debug('Message: ' + JSON.stringify(msg));
-		
+
 		switch(msg.command)
 		{
 			case 'command':
 				// https://github.com/koalazak/dorita980/issues/39
 				let command = msg.message.command;
 				adapter.log.debug('Sent command: ' + command + '!)');
-				
+
 				robot.publish('cmd', JSON.stringify({command: command, time: Date.now() / 1000 | 0, initiator: 'ioBroker.roomba'}), function(err, res)
 				{
 					if (err)
@@ -202,7 +202,7 @@ function startAdapter(options)
 						adapter.log.debug(JSON.stringify(res));
 				});
 				break;
-		
+
 			case 'getStates':
 				let states = Array.isArray(msg.message.states) ? msg.message.states : [];
 				states.forEach(function(state)
@@ -213,7 +213,7 @@ function startAdapter(options)
 					});
 				});
 				break;
-			
+
 			case 'getIp':
 				_dorita980.getRobotIP(function(err, ip)
 				{
@@ -221,7 +221,7 @@ function startAdapter(options)
 					library.msg(msg.from, msg.command, err ? {result: false, error: err.message} : {result: true, data: {ip: ip}}, msg.callback);
 				});
 				break;
-				
+
 			case 'getRobotData':
 				getRobotData(function(res)
 				{
@@ -229,7 +229,7 @@ function startAdapter(options)
 					library.msg(msg.from, msg.command, res, msg.callback);
 				}, msg.message !== null ? msg.message.ip : undefined);
 				break;
-				
+
 			case 'getPassword':
 				msg.message.encryption = msg.message.encryption === undefined ? true : msg.message.encryption;
 				getPassword(msg.message.ip, function(res)
@@ -241,8 +241,8 @@ function startAdapter(options)
 				break;
 		}
 	});
-	
-	return adapter;	
+
+	return adapter;
 };
 
 
@@ -256,29 +256,29 @@ function roomba()
 	robot = connect(adapter.config.username, adapter.config.password, adapter.config.ip); // connect(adapter.config.username, decrypted, adapter.config.ip);
 	if (!robot)
 		return library.terminate('Could not connect to Roomba!');
-	
+
 	/*
 	 * ROBOT CONNECT
 	 */
 	robot.on('connect', function()
 	{
 		adapter.log.info('Roomba online. Connection established.');
-		
+
 		closed = false;
 		connected = true;
 		library.set(nodeConnected, connected);
 		library.set(Library.CONNECTION, connected);
 	});
-	
+
 	/*
 	 * ROBOT STATE UPDATE
 	 */
 	setTimeout(() =>
 	{
 		robot.on('state', preferences => updPreferences(preferences));
-		
+
 	}, 5*1000); // wait a bit initially, so most data is available
-	
+
 	/*
 	 * ROBOT ERROR
 	 */
@@ -289,7 +289,7 @@ function roomba()
 		adapter.log.debug(err.stack);
 		disconnect();
 	});
-	
+
 	/*
 	 * ROBOT CLOSE
 	 */
@@ -297,25 +297,25 @@ function roomba()
 	{
 		if (closed) return;
 		closed = true;
-		
+
 		adapter.log.info('Roomba Connection closed.');
-		
+
 		if (res && (res.code == 'ECONNREFUSED' || res.errno == 'ECONNREFUSED'))
 			adapter.log.warn('Connection to Roomba refused. Please close all other connections to the Roomba, e.g. Smartphone Apps!');
-		
+
 		else if (res && (res.code == 'EPROTO' || res.errno == 'EPROTO'))
 			adapter.log.warn('Secure Connection to Roomba failed!');
-		
+
 		else if (res && (res.code == 'EPIPE' || res.errno == 'EPIPE'))
 			;//adapter.log.warn('Secure Connection to Roomba failed!');
-		
+
 		else
 			adapter.log.warn('Unknown error! Please see debug log for details.');
-		
+
 		adapter.log.debug(JSON.stringify(res));
 		disconnect();
 	});
-	
+
 	/*
 	 * ROBOT OFFLINE
 	 */
@@ -324,19 +324,19 @@ function roomba()
 		adapter.log.warn('Connection lost! Roomba offline.');
 		disconnect();
 	});
-	
+
 	/*
 	 * ROBOT MISSION
 	 */
 	mission = null;
 	endLoop = 0;
 	pathColor = adapter.config.pathColor || '#f00';
-	
+
 	if (_installed)
 	{
 		icons = {roomba: getImage(__dirname + '/img/roomba.png'), home: getImage(__dirname + '/img/home.png')};
 		offset = icons.roomba.width;
-		
+
 		adapter.getState('missions.current._data', function(err, state)
 		{
 			// restore last session
@@ -347,25 +347,25 @@ function roomba()
 				adapter.log.debug('Restored mission: ' + state.val);
 				mission.restored = true;
 			}
-			
+
 			// robot mission
 			robot.on('mission', function(res)
 			{
 				if (adapter.config.debug)
 					adapter.log.debug('DEBUG MISSION DATA: ' + JSON.stringify(res));
-				
+
 				// interrupt if no position is given
 				if (res.pose === null || res.pose === undefined) return;
 				res.cleanMissionStatus.phase = getCleaningPhase(res.cleanMissionStatus.phase);
-				
+
 				// map mission
 				if (['stop', 'charge', 'stuck'].indexOf(res.cleanMissionStatus.phase) === -1)
 					mapMission(res);
-				
+
 				// end mission after a while, if 'hmPostMsn' was not received
 				else if (mission !== null && mission.time !== undefined && mission.time.ended === undefined && endLoop <= 1000)
 					endLoop++;
-				
+
 				else if (mission !== null && mission.time !== undefined && mission.time.ended === undefined && endLoop > 1000)
 				{
 					endMission(mission);
@@ -412,13 +412,13 @@ function getPassword(ip, callback)
 		adapter.log.debug("Connected to Roomba!");
 		client.write(new Buffer('f005efcc3b2900', 'hex'));
 	});
-	
+
 	// error
 	client.on('error', function(err)
 	{
 		callback({result: false, error: 'Connection failed!'});
 	});
-	
+
 	// extract password
 	try
 	{
@@ -430,19 +430,19 @@ function getPassword(ip, callback)
 				sliceFrom = 9;
 				return;
 			}
-			
+
 			if (data.length <= 7)
 				callback({result: false, error: 'Failed getting password! MAKE SURE TO PRESS AND HOLD --HOME-- BUTTON 2 SECONDS (not the clean button)!'});
-			
+
 			else
 			{
 				adapter.log.debug('Extracted password.');
 				callback({result: true, data: {password: new Buffer(data).slice(sliceFrom).toString()}});
 			}
-			
+
 			client.end();
 		});
-		
+
 		client.setEncoding('utf-8');
 	}
 	catch(err)
@@ -464,7 +464,7 @@ function getPassword(ip, callback)
 function getRobotData(callback, ip)
 {
 	const server = _dgram.createSocket('udp4');
-	
+
 	server.bind(5678, function()
 	{
 		const message = new Buffer('irobotmcs');
@@ -476,13 +476,13 @@ function getRobotData(callback, ip)
 		else
 			server.send(message, 0, message.length, 5678, ip);
 	});
-	
+
 	server.on('error', function(err)
 	{
 		server.close();
 		callback({result: false, error: err});
 	});
-	
+
 	server.on('message', function(msg)
 	{
 		try
@@ -530,13 +530,13 @@ function updPreferences(preferences)
 {
 	if (_updating)
 		return false;
-	
+
 	adapter.log.silly('Retrieved preferences: ' + JSON.stringify(preferences));
 	_updating = true;
-	
+
 	// save raw preferences
 	library.set({'node': 'device._rawData', 'description': 'Raw preferences data as json', 'role': 'json'}, JSON.stringify(preferences));
-	
+
 	// update states
 	let tmp, preference, index;
 	_NODES.forEach(node =>
@@ -551,13 +551,13 @@ function updPreferences(preferences)
 				adapter.subscribeStates(node.node); // attach state listener
 				listeners[node.node] = node;
 			}
-			
+
 			// preference
 			else if (node.preference !== undefined)
 			{
 				tmp = Object.assign({}, preferences);
 				preference = node.preference;
-				
+
 				// go through preferences
 				while (preference.indexOf('.') > -1)
 				{
@@ -569,16 +569,16 @@ function updPreferences(preferences)
 					}
 					catch(err) {adapter.log.debug(err.message);}
 				}
-				
+
 				// check value
 				if (tmp === undefined || tmp[preference] === undefined || tmp[preference] === null || tmp[preference] === 'aN.aN.NaN aN:aN:aN')
 					return;
-				
+
 				// convert value
 				if (Array.isArray(tmp[preference])) {
 					tmp[preference] = tmp[preference].join(',');
 				}
-				
+
 				if (node.kind !== undefined)
 				{
 					switch(node.kind.toLowerCase())
@@ -586,17 +586,17 @@ function updPreferences(preferences)
 						case "invert":
 							tmp[preference] = tmp[preference] === false;
 							break;
-						
+
 						case "ip":
 							tmp[preference] = library.getIP(tmp[preference]);
 							break;
-						
+
 						case "datetime":
 							if (tmp[preference].toString().indexOf('.') === -1) {
 								tmp[preference] = library.getDateTime(tmp[preference]*1000);
 							}
 							break;
-						
+
 						case "timestamp":
 							if (tmp[preference].toString().indexOf('.') > -1) {
 								tmp[preference] = Math.round(new Date(tmp[preference]).getTime() / 1000);
@@ -604,17 +604,17 @@ function updPreferences(preferences)
 							break;
 					}
 				}
-				
+
 				// write value
 				if (node.exception === undefined || tmp[preference] !== node.exception) // only write value if not defined as exceptional
 					library.set(node, node.type === 'boolean' && Number.isInteger(tmp[preference]) ? (tmp[preference] === 1) : tmp[preference]);
-					
+
 				// subscribe to state
 				if (node.common && node.common.write) {
 					adapter.subscribeStates(node.node);
 				}
 			}
-			
+
 			// only state creation
 			else
 			{
@@ -649,23 +649,23 @@ function updPreferences(preferences)
 			}
 		}
 	});
-	
-	library.set({'node': 'refreshedTimestamp', 'description': 'Timestamp of last update', 'role': 'value'}, Math.floor(Date.now()/1000));
+
+	library.set({'node': 'refreshedTimestamp', 'description': 'Timestamp of last update', 'role': 'value', 'type': 'number'}, Math.floor(Date.now()/1000));
 	library.set({'node': 'refreshedDateTime', 'description': 'DateTime of last update', 'role': 'text'}, library.getDateTime(Date.now()));
-	
+
 	// refresh
 	if (!adapter.config.refresh)
 		adapter.config.refresh = 60;
-	
+
 	else if (adapter.config.refresh > 0 && adapter.config.refresh < 10)
 	{
 		adapter.log.warn('Due to performance reasons, the refresh rate can not be set to less than 10 seconds. Using 10 seconds now.');
 		adapter.config.refresh = 10;
 	}
-	
+
 	if (adapter.config.refresh > 0 && !unloaded)
 		refreshCycle = setTimeout(function() {_updating = false}, Math.round(parseInt(adapter.config.refresh)*1000));
-	
+
 	return true;
 };
 
@@ -683,46 +683,46 @@ function mapMission(res)
 		mission.pos = {
 			last: {theta: mission.pos.current.theta, x: mission.pos.current.x, y: mission.pos.current.y}
 		};
-		
+
 		// create canvas for map
 		previous = getImage(mission.map.img);
 		canvas = previous.canvas;
 		map = previous.ctx;
 		map.beginPath();
 	}
-	
+
 	// create new map once mission starts
 	if (mission === null || mission.id !== res.cleanMissionStatus.nMssn || !canvas)
 	{
 		mission = { id: res.cleanMissionStatus.nMssn, restored: false, home: false, time: {}, status: {}, pos: {}, map: {}, path: [] };
 		adapter.log.info('Roomba has started a new mission (#' + mission.id + ').');
-		
+
 		library._setValue('missions.current.id', mission.id);
-		
+
 		// started
 		mission.time.started = Math.floor(Date.now()/1000);
 		mission.time.startedDateTime = library.getDateTime(mission.time.started*1000);
 		library._setValue('missions.current.started', mission.time.started);
 		library._setValue('missions.current.startedDateTime', mission.time.startedDateTime);
-		
+
 		// reset ended
 		library._setValue('missions.current.ended', '');
 		library._setValue('missions.current.endedDateTime', '');
-		
+
 		// create canvas for map
 		canvas = createCanvas(mapSize.width, mapSize.height);
 		map = canvas.getContext('2d');
 		map.beginPath();
 	}
-	
+
 	// last position
 	else
 		mission.pos.last = { theta: mission.pos.current.theta, x: mission.pos.current.x, y: mission.pos.current.y };
-	
+
 	// add information to payload
 	mission.status = Object.assign({}, res.cleanMissionStatus, {sqm: parseFloat((res.cleanMissionStatus.sqft / 10.764).toFixed(2))});
 	mission.pos.current = {theta: 180-res.pose.theta, x: mapCenter.h + res.pose.point.x + nPos.x, y: mapCenter.v - res.pose.point.y + nPos.y};
-	
+
 	//
 	if (!canvas || !map)
 	{
@@ -731,14 +731,14 @@ function mapMission(res)
 		adapter.log.debug('Roomba mission data: ' + JSON.stringify(res));
 		return false;
 	}
-	
+
 	// place home icon
 	if (mission.pos && mission.pos.last && mission.pos.last.x && !mission.home)
 	{
 		map.drawImage(icons.home.canvas, mapCenter.h + mission.pos.current.x - icons.home.width/2, mapCenter.v + mission.pos.current.y - icons.home.height/2, icons.home.width, icons.home.height);
 		mission.home = true;
 	}
-	
+
 	// draw position on map
 	try
 	{
@@ -747,30 +747,30 @@ function mapMission(res)
 		{
 			let nSize = {width: mapSize.width, height: mapSize.height};
 			let d = {x: 0, y: 0};
-			
+
 			if (mission.pos.current.x > mapSize.width-offset) {nSize.width += 100}
 			if (mission.pos.current.y > mapSize.height-offset) {nSize.height += 100}
 			if (mission.pos.current.x < offset) {nSize.width += 100; d.x = 100; nPos.x += 100; mission.pos.last.x += d.x; mission.pos.current.x += d.x}
 			if (mission.pos.current.y < offset) {nSize.height += 100; d.y = 100; nPos.y += 100; mission.pos.last.y += d.y; mission.pos.current.y += d.y}
-			
+
 			// resize map
 			canvasTmp = createCanvas(nSize.width, nSize.height);
 			mapTmp = canvasTmp.getContext('2d');
 			mapTmp.drawImage(canvas, d.x, d.y);
-			
+
 			// remap canvas and set new size
 			canvas = canvasTmp;
 			map = mapTmp;
 			mapSize = {width: nSize.width, height: nSize.height};
 		}
-		
+
 		// robot just started
 		if (mission.pos.last === undefined)
 		{
 			map.fillStyle = pathColor;
 			map.fillRect(mission.pos.current.x, mission.pos.current.y, 1, 1);
 		}
-		
+
 		// robot moving
 		else
 		{
@@ -780,12 +780,12 @@ function mapMission(res)
 			map.lineTo(mission.pos.current.x, mission.pos.current.y);
 			map.stroke();
 		}
-		
+
 		// copy map
 		image = createCanvas(canvas.width, canvas.height);
 		img = image.getContext('2d');
 		img.drawImage(canvas, 0, 0);
-		
+
 		// add robot to copied map
 		img.drawImage(rotateImage(icons.roomba.canvas, mission.pos.current.theta), mission.pos.current.x - icons.roomba.width/2, mission.pos.current.y - icons.roomba.height/2, icons.roomba.width, icons.roomba.height);
 		mission.map = {img: image.toDataURL(), size: mapSize};
@@ -795,18 +795,18 @@ function mapMission(res)
 		adapter.log.warn(e.message);
 		adapter.log.warn(e.stack);
 	}
-	
-	
+
+
 	// add to path
 	if (mission && mission.path)
 		mission.path.push(mission.pos.current);
-	
+
 	// save map and path
 	library._setValue('missions.current.mapImage', mission.map.img);
 	library._setValue('missions.current.mapHTML', '<img src="' + mission.map.img + '" /style="width:100%;">');
 	library._setValue('missions.current.mapSize', JSON.stringify(mission.map.size));
 	library._setValue('missions.current.path', JSON.stringify(mission.path));
-	
+
 	// additional mission status information
 	mission.time.runtime = Math.floor(Date.now()/1000) - mission.time.started;
 	library._setValue('missions.current.runtime', mission.time.runtime);
@@ -815,7 +815,7 @@ function mapMission(res)
 	library._setValue('missions.current.error', !!mission.status.error);
 	library._setValue('missions.current.initiator', mission.status.initiator);
 	library._setValue('missions.current.phase', mission.status.phase);
-	
+
 	// save data
 	library._setValue('missions.current._data', JSON.stringify(Object.assign(mission, {map: {img: canvas != undefined ? canvas.toDataURL() : '', size: mapSize}})));
 	return true;
@@ -831,12 +831,12 @@ function getImage(path)
 	// read as image
 	let img = new Image();
 	img.src = path.indexOf('data:image') > -1 && path.indexOf('base64') > -1 ? path : _fs.readFileSync(path);
-	
+
 	// read as canvas
 	let canvas = createCanvas(img.width, img.height);
 	let ctx = canvas.getContext('2d');
 	ctx.drawImage(img, 0, 0);
-	
+
 	return {
 		img: img,
 		canvas: canvas,
@@ -856,13 +856,13 @@ function rotateImage(img, radiant)
 {
 	let canvas = createCanvas(img.width, img.height);
 	let ctx = canvas.getContext('2d');
-	
+
 	ctx.clearRect(0, 0, img.width, img.height); // clear the canvas
 	ctx.translate(img.width/2, img.width/2); // move registration point to the center of the canvas
 	ctx.rotate(radiant * Math.PI / 180);
 	ctx.translate(-img.width/2, -img.width/2); // Move registration point back to the top left corner of canvas
 	ctx.drawImage(img, 0, 0);
-	
+
 	return canvas;
 }
 
@@ -873,22 +873,22 @@ function rotateImage(img, radiant)
  */
 function endMission(mission)
 {
-	let history = []; 
-	
+	let history = [];
+
 	// get history
 	adapter.getState('missions.history', function(err, state)
 	{
 		history = state != null && state.val != '' ? JSON.parse(state.val) : history;
-		
+
 		// add end time
 		mission.time.ended = Math.floor(Date.now()/1000);
 		mission.time.endedDateTime = library.getDateTime(mission.time.ended*1000);
 		library._setValue('missions.current.endedDateTime', mission.time.endedDateTime);
 		library._setValue('missions.current.ended', mission.time.ended);
-		
+
 		// save data
 		library._setValue('missions.current._data', JSON.stringify(mission));
-		
+
 		// check for duplicates
 		let duplicate = false;
 		history.forEach(function(entry, i)
@@ -900,22 +900,22 @@ function endMission(mission)
 				duplicate = true;
 			}
 		});
-		
+
 		if (duplicate === false)
 		{
 			delete mission.path;
 			history.push(mission);
 		}
-		
+
 		// save history
 		library._setValue('missions.history', JSON.stringify(history.slice(0, 199))); // only keep 200 entries
 		adapter.log.info('Mission #' + mission.id + ' saved.');
-		
+
 		// reset mission
 		mission = null;
 		canvas = null;
 		map = null;
-		
+
 		return true;
 	});
 };

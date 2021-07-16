@@ -3,6 +3,18 @@
         "name": "roomba",
         "version": "1.1.2",
         "title": "iRobot Roomba",
+        "titleLang": {
+            "en": "iRobot Roomba",
+            "de": "iRobot Roomba",
+            "ru": "iRobot Roomba",
+            "pt": "iRobot Roomba",
+            "nl": "iRobot Roomba",
+            "fr": "iRobot Roomba",
+            "it": "iRobot Roomba",
+            "es": "iRobot Roomba",
+            "pl": "iRobot Roomba",
+            "zh-cn": "iRobot Roomba"
+        },
         "desc": {
             "en": "Connect your iRobot Roomba to ioBroker",
             "de": "Verbinde deinen iRobot Roomba mit ioBroker",

@@ -304,6 +304,9 @@ You may edit the variable ```message``` to any notification you would like to re
 
 ## Changelog
 
+### ___WORK IN PROGRESS__
+* (Apollon77) Adjust some types to prevent js-controller 3.3 warnings
+
 ### 1.1.1 (2020-02-16)
 - (Zefau) moved development to Community Repository
 
