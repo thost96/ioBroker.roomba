@@ -68,7 +68,7 @@ var servConn = {
         return this._user;
     },
     setReloadTimeout: function (timeout){
-        this._reloadInterval = parseInt(timeout, 10);    
+        this._reloadInterval = parseInt(timeout, 10);
     },
     setReconnectInterval: function (interval){
         this._reconnectInterval = parseInt(interval, 10);
@@ -236,7 +236,7 @@ var servConn = {
 
                     // reload whole page if no connection longer than some period
                     if (that._reloadInterval && offlineTime > that._reloadInterval * 1000) window.location.reload();
-                    
+
                     that._disconnectedSince = null;
                 }
 
@@ -400,7 +400,7 @@ var servConn = {
     getVersion:       function (callback) {
         if (!this._checkConnection('getVersion', arguments)) return;
 
-        this._socket.emit('getVersion', function (version) {
+        this._socket.emit('getVersion', function (err, version) {
             if (callback) callback(version);
         });
     },
@@ -414,7 +414,7 @@ var servConn = {
             console.log('socket.io not initialized');
             return;
         }
-        this._socket.emit('getVersion', function (version) {
+        this._socket.emit('getVersion', function (err, version) {
             if (callback)
                 callback(version);
         });
